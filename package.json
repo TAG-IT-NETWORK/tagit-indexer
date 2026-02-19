@@ -1,0 +1,16 @@
+{
+  "name": "tagit-indexer",
+  "version": "0.1.0",
+  "description": "Graph Protocol subgraph for TAGIT ERC-8004 agent contracts",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "test": "graph test",
+    "deploy:goldsky": "goldsky subgraph deploy tagit-indexer/0.1.0 --path ."
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.71.2",
+    "@graphprotocol/graph-ts": "0.35.1",
+    "matchstick-as": "0.6.0"
+  }
+}

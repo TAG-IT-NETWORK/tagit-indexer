@@ -1,0 +1,101 @@
+type Protocol @entity {
+  id: ID!
+  totalAgents: Int!
+  totalActiveAgents: Int!
+  totalFeedback: Int!
+  totalActiveFeedback: Int!
+  totalRatingSum: Int!
+  averageRating: BigDecimal!
+  totalValidationRequests: Int!
+  totalValidationsPassed: Int!
+  totalValidationsFailed: Int!
+}
+
+type Agent @entity {
+  id: ID!
+  agentId: BigInt!
+  registrant: Bytes!
+  wallet: Bytes!
+  uri: String!
+  status: Int!
+  statusLabel: String!
+  registeredAt: BigInt!
+  registeredAtBlock: BigInt!
+
+  # Denormalized reputation aggregates
+  feedbackCount: Int!
+  activeFeedbackCount: Int!
+  ratingSum: Int!
+  averageRating: BigDecimal!
+
+  # Denormalized validation aggregates
+  validationRequestCount: Int!
+  validationPassedCount: Int!
+  validationFailedCount: Int!
+  isValidated: Boolean!
+
+  # Reverse lookups
+  metadata: [AgentMetadata!]! @derivedFrom(field: "agent")
+  statusChanges: [AgentStatusChange!]! @derivedFrom(field: "agent")
+  feedbacks: [Feedback!]! @derivedFrom(field: "agent")
+  validationRequests: [ValidationRequest!]! @derivedFrom(field: "agent")
+}
+
+type AgentMetadata @entity {
+  id: ID!
+  agent: Agent!
+  key: String!
+  value: String!
+  updatedAt: BigInt!
+  updatedAtBlock: BigInt!
+}
+
+type AgentStatusChange @entity(immutable: true) {
+  id: ID!
+  agent: Agent!
+  oldStatus: Int!
+  newStatus: Int!
+  oldStatusLabel: String!
+  newStatusLabel: String!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Feedback @entity {
+  id: ID!
+  feedbackId: BigInt!
+  agent: Agent!
+  reviewer: Bytes!
+  rating: Int!
+  revoked: Boolean!
+  hasResponse: Boolean!
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+}
+
+type ValidationRequest @entity {
+  id: ID!
+  requestId: BigInt!
+  agent: Agent!
+  requester: Bytes!
+  isDefense: Boolean!
+  status: String!
+  responseCount: Int!
+  passed: Boolean!
+  finalScore: BigInt!
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+  finalizedAt: BigInt
+  responses: [ValidationResponse!]! @derivedFrom(field: "request")
+}
+
+type ValidationResponse @entity(immutable: true) {
+  id: ID!
+  request: ValidationRequest!
+  validator: Bytes!
+  score: Int!
+  submittedAt: BigInt!
+  submittedAtBlock: BigInt!
+  transactionHash: Bytes!
+}

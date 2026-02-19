@@ -1,0 +1,16 @@
+{
+  "optimism-sepolia": {
+    "TAGITAgentIdentity": {
+      "address": "0xA7f34FD595eBc397Fe04DcE012dbcf0fbbD2A78D",
+      "startBlock": 39774582
+    },
+    "TAGITAgentReputation": {
+      "address": "0x57CCa1974DFE29593FBd24fdAEE1cD614Bfd6E4a",
+      "startBlock": 39774582
+    },
+    "TAGITAgentValidation": {
+      "address": "0x9806919185F98Bd07a64F7BC7F264e91939e86b7",
+      "startBlock": 39774582
+    }
+  }
+}
