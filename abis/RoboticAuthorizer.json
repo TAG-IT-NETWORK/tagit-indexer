@@ -30,7 +30,7 @@
       {
         "name": "safetyClass",
         "type": "uint256",
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256"
       }
     ],

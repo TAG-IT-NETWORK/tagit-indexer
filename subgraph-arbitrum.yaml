@@ -59,7 +59,7 @@ dataSources:
         - name: RoboticAuthorizer
           file: ./abis/RoboticAuthorizer.json
       eventHandlers:
-        - event: RobotActionAuthorized(indexed address,indexed uint256,uint256,bytes32,uint256)
+        - event: RobotActionAuthorized(indexed address,indexed uint256,uint256,bytes32,indexed uint256)
           handler: handleRobotActionAuthorized
         - event: ObjectSafetyClassUpdated(indexed uint256,uint8,uint8)
           handler: handleObjectSafetyClassUpdated
