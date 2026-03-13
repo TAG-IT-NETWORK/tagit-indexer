@@ -1,0 +1,70 @@
+# TAGITCore subgraph for Arbitrum Sepolia
+# Deploy: goldsky subgraph deploy tagit-core-arbitrum/0.1.0 --path .
+#
+# IMPORTANT: Replace the address and startBlock below with actual deployment values.
+# Run the DeployArbitrumSepolia.s.sol script first, then update the proxy address here.
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema-core.graphql
+dataSources:
+  - kind: ethereum
+    name: TAGITCore
+    network: arbitrum-sepolia
+    source:
+      address: "0x0000000000000000000000000000000000000000"
+      abi: TAGITCore
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CoreProtocol
+        - Asset
+        - StateTransition
+        - CustodyChange
+        - ResolveApproval
+      abis:
+        - name: TAGITCore
+          file: ./abis/TAGITCore.json
+      eventHandlers:
+        - event: AssetMinted(indexed uint256,indexed address,bytes32)
+          handler: handleAssetMinted
+        - event: StateChanged(indexed uint256,uint8,uint8,address)
+          handler: handleStateChanged
+        - event: TagBound(indexed uint256,indexed bytes32)
+          handler: handleTagBound
+        - event: CustodyTransfer(indexed uint256,uint8,uint8,indexed address,indexed address,uint256,bytes32)
+          handler: handleCustodyTransfer
+        - event: ResolveApproved(indexed uint256,indexed address,uint256)
+          handler: handleResolveApproved
+      file: ./src/handlers/tagicore.ts
+  - kind: ethereum
+    name: RoboticAuthorizer
+    network: arbitrum-sepolia
+    source:
+      address: "0x0000000000000000000000000000000000000000"
+      abi: RoboticAuthorizer
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RobotAuthorization
+        - ObjectSecurityConfig
+      abis:
+        - name: RoboticAuthorizer
+          file: ./abis/RoboticAuthorizer.json
+      eventHandlers:
+        - event: RobotActionAuthorized(indexed address,indexed uint256,uint256,bytes32,uint256)
+          handler: handleRobotActionAuthorized
+        - event: ObjectSafetyClassUpdated(indexed uint256,uint8,uint8)
+          handler: handleObjectSafetyClassUpdated
+        - event: ObjectZoneUpdated(indexed uint256,bytes32,bytes32)
+          handler: handleObjectZoneUpdated
+        - event: ObjectProhibitedActionsUpdated(indexed uint256,uint256,uint256)
+          handler: handleObjectProhibitedActionsUpdated
+      file: ./src/handlers/robotauthorizer.ts

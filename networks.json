@@ -12,5 +12,11 @@
       "address": "0x9806919185F98Bd07a64F7BC7F264e91939e86b7",
       "startBlock": 39774582
     }
+  },
+  "arbitrum-sepolia": {
+    "TAGITCore": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 0
+    }
   }
 }
