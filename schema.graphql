@@ -272,3 +272,33 @@ type ValidationResponse @entity(immutable: true) {
   submittedAtBlock: BigInt!
   transactionHash: Bytes!
 }
+
+# ============================================
+# REWARD DISTRIBUTION ENTITIES
+# ============================================
+
+type RewardDistribution @entity(immutable: true) {
+  "tx hash + log index"
+  id: ID!
+  recipient: RewardRecipient!
+  recipientAddress: Bytes!
+  amount: BigInt!
+  triggerType: Int!
+  triggerTypeLabel: String!
+  cumulativeDistributed: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RewardRecipient @entity {
+  "recipient address"
+  id: ID!
+  totalEcosystemRewards: BigInt!
+  totalReferralRewards: BigInt!
+  totalVerificationRewards: BigInt!
+  totalGovernanceRewards: BigInt!
+  totalRewards: BigInt!
+  rewardCount: Int!
+  distributions: [RewardDistribution!]! @derivedFrom(field: "recipient")
+}
