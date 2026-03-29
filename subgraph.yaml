@@ -4,6 +4,81 @@ indexerHints:
 schema:
   file: ./schema.graphql
 dataSources:
+  # ── wTAG Token (TAGITToken ERC-20) ──
+  - kind: ethereum
+    name: TAGITToken
+    network: optimism-sepolia
+    source:
+      # TODO: Replace with deployed TAGITToken proxy address on OP Sepolia
+      address: "0x0000000000000000000000000000000000000000"
+      abi: TAGITToken
+      startBlock: 39774582
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - WTagAccount
+        - WTagTransfer
+        - WTagApproval
+        - WTagMint
+        - WTagBurn
+        - WTagEmissionsConfig
+        - WTagUpgrade
+      abis:
+        - name: TAGITToken
+          file: ./abis/TAGITToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleWTagTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleWTagApproval
+        - event: TokensMinted(indexed address,uint256,uint256)
+          handler: handleTokensMinted
+        - event: TokensBurned(indexed address,uint256,uint256)
+          handler: handleTokensBurned
+        - event: EmissionsAddressSet(indexed address,indexed address)
+          handler: handleEmissionsAddressSet
+        - event: ContractUpgraded(indexed address,string)
+          handler: handleContractUpgraded
+      file: ./src/handlers/wtag.ts
+
+  # ── Voucher (VerificationEscrow) ──
+  - kind: ethereum
+    name: VerificationEscrow
+    network: optimism-sepolia
+    source:
+      # TODO: Replace with deployed VerificationEscrow address on OP Sepolia
+      address: "0x0000000000000000000000000000000000000000"
+      abi: VerificationEscrow
+      startBlock: 39774582
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Escrow
+        - EscrowCreated
+        - EscrowReleased
+        - EscrowCancelled
+        - OracleUpdate
+      abis:
+        - name: VerificationEscrow
+          file: ./abis/VerificationEscrow.json
+      eventHandlers:
+        - event: EscrowCreated(indexed uint256,indexed uint256,indexed address,address,uint256)
+          handler: handleEscrowCreated
+        - event: EscrowReleased(indexed uint256,indexed uint256,indexed address,uint256,address)
+          handler: handleEscrowReleased
+        - event: EscrowCancelled(indexed uint256,indexed uint256,indexed address,uint256)
+          handler: handleEscrowCancelled
+        - event: TrustedOracleUpdated(indexed address,indexed address)
+          handler: handleTrustedOracleUpdated
+      file: ./src/handlers/voucher.ts
+
+  # ── Agent Identity ──
   - kind: ethereum
     name: TAGITAgentIdentity
     network: optimism-sepolia
@@ -36,6 +111,7 @@ dataSources:
           handler: handleAgentStatusChanged
       file: ./src/handlers/agent-identity.ts
 
+  # ── Agent Reputation ──
   - kind: ethereum
     name: TAGITAgentReputation
     network: optimism-sepolia
@@ -63,6 +139,7 @@ dataSources:
           handler: handleResponseAppended
       file: ./src/handlers/agent-reputation.ts
 
+  # ── Agent Validation ──
   - kind: ethereum
     name: TAGITAgentValidation
     network: optimism-sepolia
