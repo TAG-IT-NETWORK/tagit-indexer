@@ -1,5 +1,13 @@
 {
   "optimism-sepolia": {
+    "TAGITToken": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 39774582
+    },
+    "VerificationEscrow": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 39774582
+    },
     "TAGITAgentIdentity": {
       "address": "0xA7f34FD595eBc397Fe04DcE012dbcf0fbbD2A78D",
       "startBlock": 39774582
