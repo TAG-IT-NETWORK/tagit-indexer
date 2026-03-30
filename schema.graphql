@@ -329,3 +329,80 @@ type RewardRecipient @entity {
   rewardCount: Int!
   distributions: [RewardDistribution!]! @derivedFrom(field: "recipient")
 }
+
+# ============================================
+# TREASURY SPEND ENTITIES (TAGITTreasury)
+# ============================================
+
+"Mutable treasury allocation tracking budget and spend per program"
+type TreasuryAllocation @entity {
+  id: ID!
+  allocationId: BigInt!
+  programId: Bytes!
+  recipient: Bytes!
+  amount: BigInt!
+  spent: BigInt!
+  expiresAt: BigInt!
+  active: Boolean!
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+  closedAt: BigInt
+  transactionHash: Bytes!
+}
+
+"Mutable treasury withdrawal tracking queued/executed/canceled spend"
+type TreasuryWithdrawal @entity {
+  id: ID!
+  withdrawalId: BigInt!
+  allocationId: BigInt!
+  to: Bytes!
+  token: Bytes!
+  amount: BigInt!
+  executesAt: BigInt!
+  status: String!
+  queuedAt: BigInt!
+  queuedAtBlock: BigInt!
+  executedAt: BigInt
+  canceledAt: BigInt
+  canceledBy: Bytes
+  transactionHash: Bytes!
+}
+
+"Immutable record of treasury deposit (ETH or ERC-20)"
+type TreasuryDeposit @entity(immutable: true) {
+  id: ID!
+  token: Bytes!
+  from: Bytes!
+  amount: BigInt!
+  isETH: Boolean!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of emergency sweep"
+type TreasuryEmergencySweep @entity(immutable: true) {
+  id: ID!
+  token: Bytes!
+  to: Bytes!
+  amount: BigInt!
+  signerCount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Singleton aggregate for treasury spend reporting"
+type TreasurySummary @entity {
+  id: ID!
+  totalAllocations: Int!
+  activeAllocations: Int!
+  totalAllocatedAmount: BigInt!
+  totalSpentAmount: BigInt!
+  totalDeposits: Int!
+  totalDepositedAmount: BigInt!
+  totalWithdrawals: Int!
+  totalWithdrawalsPending: Int!
+  totalWithdrawalsExecuted: Int!
+  totalWithdrawalsCanceled: Int!
+}

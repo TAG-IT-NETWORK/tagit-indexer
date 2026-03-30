@@ -168,6 +168,47 @@ dataSources:
           handler: handleResponseAppended
       file: ./src/handlers/agent-reputation.ts
 
+  # ── Treasury (TAGITTreasury) ──
+  - kind: ethereum
+    name: TAGITTreasury
+    network: optimism-sepolia
+    source:
+      # TODO: Replace with deployed TAGITTreasury proxy address on OP Sepolia
+      address: "0x0000000000000000000000000000000000000000"
+      abi: TAGITTreasury
+      startBlock: 39774582
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TreasurySummary
+        - TreasuryAllocation
+        - TreasuryWithdrawal
+        - TreasuryDeposit
+        - TreasuryEmergencySweep
+      abis:
+        - name: TAGITTreasury
+          file: ./abis/TAGITTreasury.json
+      eventHandlers:
+        - event: AllocationCreated(indexed uint256,indexed bytes32,indexed address,uint256,uint48)
+          handler: handleAllocationCreated
+        - event: AllocationClosed(indexed uint256,uint256)
+          handler: handleAllocationClosed
+        - event: WithdrawalQueued(indexed uint256,indexed uint256,indexed address,address,uint256,uint48)
+          handler: handleWithdrawalQueued
+        - event: WithdrawalExecuted(indexed uint256,indexed address,address,uint256)
+          handler: handleWithdrawalExecuted
+        - event: WithdrawalCanceled(indexed uint256,indexed address)
+          handler: handleWithdrawalCanceled
+        - event: ETHDeposited(indexed address,uint256)
+          handler: handleETHDeposited
+        - event: TokenDeposited(indexed address,indexed address,uint256)
+          handler: handleTokenDeposited
+        - event: EmergencySweep(indexed address,indexed address,uint256,uint256)
+          handler: handleEmergencySweep
+      file: ./src/handlers/treasury.ts
+
   # ── Agent Validation ──
   - kind: ethereum
     name: TAGITAgentValidation
