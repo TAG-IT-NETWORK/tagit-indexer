@@ -111,6 +111,35 @@ dataSources:
           handler: handleAgentStatusChanged
       file: ./src/handlers/agent-identity.ts
 
+  # ── Reputation Staking (Credibility Bond) ──
+  - kind: ethereum
+    name: ReputationStaking
+    network: optimism-sepolia
+    source:
+      # TODO: Replace with deployed ReputationStaking address on OP Sepolia
+      address: "0x0000000000000000000000000000000000000000"
+      abi: ReputationStaking
+      startBlock: 39774582
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Agent
+        - StakeEvent
+      abis:
+        - name: ReputationStaking
+          file: ./abis/ReputationStaking.json
+      eventHandlers:
+        - event: StakeDeposited(indexed uint256,indexed address,uint256)
+          handler: handleStakeDeposited
+        - event: StakeWithdrawn(indexed uint256,indexed address,uint256)
+          handler: handleStakeWithdrawn
+        - event: StakeSlashed(indexed uint256,uint256,indexed address)
+          handler: handleStakeSlashed
+      file: ./src/handlers/reputation-staking.ts
+
   # ── Agent Reputation ──
   - kind: ethereum
     name: TAGITAgentReputation

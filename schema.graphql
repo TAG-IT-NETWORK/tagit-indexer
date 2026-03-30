@@ -19,6 +19,11 @@ type Protocol @entity {
   wtagTotalTransfers: Int!
   wtagTotalBurned: BigInt!
 
+  "Reputation staking aggregate stats"
+  totalStakedAmount: BigInt!
+  totalSlashedAmount: BigInt!
+  totalStakingEvents: Int!
+
   "Voucher (escrow) aggregate stats"
   totalEscrows: Int!
   totalEscrowsReleased: Int!
@@ -207,11 +212,17 @@ type Agent @entity {
   validationFailedCount: Int!
   isValidated: Boolean!
 
+  # Denormalized staking aggregates
+  stakeAmount: BigInt!
+  staker: Bytes
+  hasMinBond: Boolean!
+
   # Reverse lookups
   metadata: [AgentMetadata!]! @derivedFrom(field: "agent")
   statusChanges: [AgentStatusChange!]! @derivedFrom(field: "agent")
   feedbacks: [Feedback!]! @derivedFrom(field: "agent")
   validationRequests: [ValidationRequest!]! @derivedFrom(field: "agent")
+  stakeEvents: [StakeEvent!]! @derivedFrom(field: "agent")
 }
 
 type AgentMetadata @entity {
@@ -270,6 +281,22 @@ type ValidationResponse @entity(immutable: true) {
   score: Int!
   submittedAt: BigInt!
   submittedAtBlock: BigInt!
+  transactionHash: Bytes!
+}
+
+# ============================================
+# REPUTATION STAKING ENTITIES
+# ============================================
+
+"Immutable record of a staking event (deposit, withdrawal, or slash)"
+type StakeEvent @entity(immutable: true) {
+  id: ID!
+  agent: Agent!
+  eventType: String!
+  staker: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
   transactionHash: Bytes!
 }
 

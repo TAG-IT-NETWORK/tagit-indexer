@@ -15,6 +15,11 @@ export function getOrCreateProtocol(): Protocol {
     protocol.totalValidationsPassed = 0;
     protocol.totalValidationsFailed = 0;
 
+    // Reputation staking aggregates
+    protocol.totalStakedAmount = ZERO_BI;
+    protocol.totalSlashedAmount = ZERO_BI;
+    protocol.totalStakingEvents = 0;
+
     // wTAG token aggregates
     protocol.wtagTotalSupply = ZERO_BI;
     protocol.wtagTotalTransfers = 0;

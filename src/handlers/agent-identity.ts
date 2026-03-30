@@ -28,6 +28,10 @@ export function handleAgentRegistered(event: AgentRegistered): void {
   agent.registeredAt = event.block.timestamp;
   agent.registeredAtBlock = event.block.number;
 
+  agent.stakeAmount = BigInt.fromI32(0);
+  agent.staker = null;
+  agent.hasMinBond = false;
+
   agent.feedbackCount = 0;
   agent.activeFeedbackCount = 0;
   agent.ratingSum = 0;
