@@ -13,7 +13,7 @@ dataSources:
     name: TAGITCore
     network: arbitrum-sepolia
     source:
-      address: "0x2cb1E0ecE274217F214057c0a829582834Aeaf7f"
+      address: "0x5952f5af2429e6f973FE40aD6bEad5c770837233"
       abi: TAGITCore
       startBlock: 246901619
     mapping:
@@ -45,7 +45,7 @@ dataSources:
     name: RoboticAuthorizer
     network: arbitrum-sepolia
     source:
-      address: "0x73E84b5A82164C6c0301A9c4689D60aE9B9050a8"
+      address: "0x98eF7b708c0cD26169a4A2092e6F1706760aff1d"
       abi: RoboticAuthorizer
       startBlock: 249570041
     mapping:

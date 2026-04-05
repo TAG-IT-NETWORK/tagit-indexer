@@ -9,8 +9,7 @@ dataSources:
     name: TAGITToken
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed TAGITToken proxy address on OP Sepolia
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0x061a89736F91cAC11272B8A95fc7e377cD0e4067"
       abi: TAGITToken
       startBlock: 39774582
     mapping:
@@ -49,8 +48,7 @@ dataSources:
     name: VerificationEscrow
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed VerificationEscrow address on OP Sepolia
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726"
       abi: VerificationEscrow
       startBlock: 39774582
     mapping:
@@ -173,8 +171,7 @@ dataSources:
     name: TAGITTreasury
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed TAGITTreasury proxy address on OP Sepolia
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0x841B07Ad929CCC589446e29Aa0C4Dd1639B48674"
       abi: TAGITTreasury
       startBlock: 39774582
     mapping:
