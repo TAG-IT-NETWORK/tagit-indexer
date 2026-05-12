@@ -9,10 +9,9 @@ dataSources:
     name: TAGITToken
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed TAGITToken proxy address on OP Sepolia
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0x061a89736F91cAC11272B8A95fc7e377cD0e4067"
       abi: TAGITToken
-      startBlock: 39774582
+      startBlock: 41670569
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -49,10 +48,9 @@ dataSources:
     name: VerificationEscrow
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed VerificationEscrow address on OP Sepolia
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726"
       abi: VerificationEscrow
-      startBlock: 39774582
+      startBlock: 41670569
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -116,7 +114,9 @@ dataSources:
     name: ReputationStaking
     network: optimism-sepolia
     source:
-      # TODO: Replace with deployed ReputationStaking address on OP Sepolia
+      # BLOCKED: ReputationStaking not yet deployed to OP Sepolia.
+      # Deploy via tagit-contracts/script/deploy/DeployReputationStaking.s.sol
+      # then replace this address and update startBlock to the deployment block.
       address: "0x0000000000000000000000000000000000000000"
       abi: ReputationStaking
       startBlock: 39774582
