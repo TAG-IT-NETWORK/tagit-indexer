@@ -199,6 +199,7 @@ type Agent @entity {
   statusLabel: String!
   registeredAt: BigInt!
   registeredAtBlock: BigInt!
+  activatedAt: BigInt
 
   # Denormalized reputation aggregates
   feedbackCount: Int!

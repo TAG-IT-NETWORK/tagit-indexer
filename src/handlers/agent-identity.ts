@@ -1,5 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import {
+  AgentActivated,
   AgentRegistered,
   AgentURIUpdated,
   AgentWalletUpdated,
@@ -47,6 +48,14 @@ export function handleAgentRegistered(event: AgentRegistered): void {
   let protocol = getOrCreateProtocol();
   protocol.totalAgents += 1;
   protocol.save();
+}
+
+export function handleAgentActivated(event: AgentActivated): void {
+  let agent = Agent.load(event.params.agentId.toString());
+  if (agent == null) return;
+
+  agent.activatedAt = event.block.timestamp;
+  agent.save();
 }
 
 export function handleAgentURIUpdated(event: AgentURIUpdated): void {

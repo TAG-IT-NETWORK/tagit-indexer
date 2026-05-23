@@ -99,6 +99,8 @@ dataSources:
       eventHandlers:
         - event: AgentRegistered(indexed uint256,indexed address,indexed address,string)
           handler: handleAgentRegistered
+        - event: AgentActivated(indexed uint256,indexed address)
+          handler: handleAgentActivated
         - event: AgentURIUpdated(indexed uint256,string)
           handler: handleAgentURIUpdated
         - event: AgentWalletUpdated(indexed uint256,indexed address,indexed address)

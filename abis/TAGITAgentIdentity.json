@@ -793,6 +793,25 @@
   },
   {
     "type": "event",
+    "name": "AgentActivated",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "registrant",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "AgentMetadataSet",
     "inputs": [
       {
