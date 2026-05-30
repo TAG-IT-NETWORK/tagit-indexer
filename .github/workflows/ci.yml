@@ -23,7 +23,9 @@ jobs:
       - run: npm audit --audit-level=high || true
 
   test:
-    runs-on: ubuntu-latest
+    # Pin to 22.04 — matchstick (graph test) 0.6.0 errors "Unsupported platform"
+    # on the Ubuntu 24.04 image that ubuntu-latest now resolves to.
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - uses: actions/checkout@v4
