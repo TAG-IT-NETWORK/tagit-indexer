@@ -1,5 +1,13 @@
 {
   "optimism-sepolia": {
+    "TAGITToken": {
+      "address": "0x061a89736F91cAC11272B8A95fc7e377cD0e4067",
+      "startBlock": 41670569
+    },
+    "VerificationEscrow": {
+      "address": "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726",
+      "startBlock": 41670569
+    },
     "TAGITAgentIdentity": {
       "address": "0xA7f34FD595eBc397Fe04DcE012dbcf0fbbD2A78D",
       "startBlock": 39774582
@@ -11,6 +19,12 @@
     "TAGITAgentValidation": {
       "address": "0x9806919185F98Bd07a64F7BC7F264e91939e86b7",
       "startBlock": 39774582
+    }
+  },
+  "arbitrum-sepolia": {
+    "TAGITCore": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 0
     }
   }
 }

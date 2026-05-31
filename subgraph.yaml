@@ -4,6 +4,79 @@ indexerHints:
 schema:
   file: ./schema.graphql
 dataSources:
+  # ── wTAG Token (TAGITToken ERC-20) ──
+  - kind: ethereum
+    name: TAGITToken
+    network: optimism-sepolia
+    source:
+      address: "0x061a89736F91cAC11272B8A95fc7e377cD0e4067"
+      abi: TAGITToken
+      startBlock: 41670569
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - WTagAccount
+        - WTagTransfer
+        - WTagApproval
+        - WTagMint
+        - WTagBurn
+        - WTagEmissionsConfig
+        - WTagUpgrade
+      abis:
+        - name: TAGITToken
+          file: ./abis/TAGITToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleWTagTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleWTagApproval
+        - event: TokensMinted(indexed address,uint256,uint256)
+          handler: handleTokensMinted
+        - event: TokensBurned(indexed address,uint256,uint256)
+          handler: handleTokensBurned
+        - event: EmissionsAddressSet(indexed address,indexed address)
+          handler: handleEmissionsAddressSet
+        - event: ContractUpgraded(indexed address,string)
+          handler: handleContractUpgraded
+      file: ./src/handlers/wtag.ts
+
+  # ── Voucher (VerificationEscrow) ──
+  - kind: ethereum
+    name: VerificationEscrow
+    network: optimism-sepolia
+    source:
+      address: "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726"
+      abi: VerificationEscrow
+      startBlock: 41670569
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Escrow
+        - EscrowCreated
+        - EscrowReleased
+        - EscrowCancelled
+        - OracleUpdate
+      abis:
+        - name: VerificationEscrow
+          file: ./abis/VerificationEscrow.json
+      eventHandlers:
+        - event: EscrowCreated(indexed uint256,indexed uint256,indexed address,address,uint256)
+          handler: handleEscrowCreated
+        - event: EscrowReleased(indexed uint256,indexed uint256,indexed address,uint256,address)
+          handler: handleEscrowReleased
+        - event: EscrowCancelled(indexed uint256,indexed uint256,indexed address,uint256)
+          handler: handleEscrowCancelled
+        - event: TrustedOracleUpdated(indexed address,indexed address)
+          handler: handleTrustedOracleUpdated
+      file: ./src/handlers/voucher.ts
+
+  # ── Agent Identity ──
   - kind: ethereum
     name: TAGITAgentIdentity
     network: optimism-sepolia
@@ -26,6 +99,8 @@ dataSources:
       eventHandlers:
         - event: AgentRegistered(indexed uint256,indexed address,indexed address,string)
           handler: handleAgentRegistered
+        - event: AgentActivated(indexed uint256,indexed address)
+          handler: handleAgentActivated
         - event: AgentURIUpdated(indexed uint256,string)
           handler: handleAgentURIUpdated
         - event: AgentWalletUpdated(indexed uint256,indexed address,indexed address)
@@ -36,6 +111,38 @@ dataSources:
           handler: handleAgentStatusChanged
       file: ./src/handlers/agent-identity.ts
 
+  # ── Reputation Staking (Credibility Bond) ──
+  - kind: ethereum
+    name: ReputationStaking
+    network: optimism-sepolia
+    source:
+      # BLOCKED: ReputationStaking not yet deployed to OP Sepolia.
+      # Deploy via tagit-contracts/script/deploy/DeployReputationStaking.s.sol
+      # then replace this address and update startBlock to the deployment block.
+      address: "0x0000000000000000000000000000000000000000"
+      abi: ReputationStaking
+      startBlock: 39774582
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Agent
+        - StakeEvent
+      abis:
+        - name: ReputationStaking
+          file: ./abis/ReputationStaking.json
+      eventHandlers:
+        - event: StakeDeposited(indexed uint256,indexed address,uint256)
+          handler: handleStakeDeposited
+        - event: StakeWithdrawn(indexed uint256,indexed address,uint256)
+          handler: handleStakeWithdrawn
+        - event: StakeSlashed(indexed uint256,uint256,indexed address)
+          handler: handleStakeSlashed
+      file: ./src/handlers/reputation-staking.ts
+
+  # ── Agent Reputation ──
   - kind: ethereum
     name: TAGITAgentReputation
     network: optimism-sepolia
@@ -63,6 +170,7 @@ dataSources:
           handler: handleResponseAppended
       file: ./src/handlers/agent-reputation.ts
 
+  # ── Agent Validation ──
   - kind: ethereum
     name: TAGITAgentValidation
     network: optimism-sepolia

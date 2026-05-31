@@ -1,0 +1,92 @@
+"Singleton aggregate stats for TAGITCore lifecycle"
+type CoreProtocol @entity {
+  id: ID!
+  totalAssets: Int!
+  "State distribution counters"
+  stateMinted: Int!
+  stateBound: Int!
+  stateActivated: Int!
+  stateClaimed: Int!
+  stateFlagged: Int!
+  stateRecycled: Int!
+  totalTransfers: Int!
+}
+
+"Physical asset NFT tracked through 7-state lifecycle"
+type Asset @entity {
+  id: ID!
+  tokenId: BigInt!
+  owner: Bytes!
+  metadata: Bytes!
+  state: Int!
+  stateLabel: String!
+  tagHash: Bytes
+  mintedAt: BigInt!
+  mintedAtBlock: BigInt!
+  lastStateChangeAt: BigInt!
+  transactionHash: Bytes!
+
+  stateTransitions: [StateTransition!]! @derivedFrom(field: "asset")
+  custodyChanges: [CustodyChange!]! @derivedFrom(field: "asset")
+}
+
+"Immutable record of every lifecycle state change"
+type StateTransition @entity(immutable: true) {
+  id: ID!
+  asset: Asset!
+  fromState: Int!
+  toState: Int!
+  fromStateLabel: String!
+  toStateLabel: String!
+  actor: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable audit record of custody transfer (CMMC-compliant chain of custody)"
+type CustodyChange @entity(immutable: true) {
+  id: ID!
+  asset: Asset!
+  fromState: Int!
+  toState: Int!
+  fromOwner: Bytes!
+  toOwner: Bytes!
+  timestamp: BigInt!
+  prevStateHash: Bytes!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of NFC tag resolution approval"
+type ResolveApproval @entity(immutable: true) {
+  id: ID!
+  asset: Asset!
+  approver: Bytes!
+  approvalCount: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of a robot action authorization against an asset"
+type RobotAuthorization @entity(immutable: true) {
+  id: ID!
+  robot: Bytes!
+  tokenId: BigInt!
+  actions: BigInt!
+  zone: Bytes!
+  safetyClass: Int!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+"Mutable security configuration for an asset (keyed by tokenId)"
+type ObjectSecurityConfig @entity {
+  id: ID!
+  safetyClass: Int!
+  zone: Bytes!
+  prohibitedActions: BigInt!
+  lastUpdated: BigInt!
+}

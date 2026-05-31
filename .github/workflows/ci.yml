@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run build
+      # Advisory only — don't fail the build on transitive-dep advisories (e.g. qs).
+      # Dependabot/dependabot.yml handles remediation; audit output stays visible in logs.
+      - run: npm audit --audit-level=high || true
+
+  test:
+    # Pin to 22.04 — matchstick (graph test) 0.6.0 errors "Unsupported platform"
+    # on the Ubuntu 24.04 image that ubuntu-latest now resolves to.
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm test

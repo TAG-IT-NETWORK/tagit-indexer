@@ -8,6 +8,7 @@ import {
 } from "matchstick-as";
 import { BigInt, Address, ethereum, Bytes } from "@graphprotocol/graph-ts";
 import {
+  handleAgentActivated,
   handleAgentRegistered,
   handleAgentURIUpdated,
   handleAgentWalletUpdated,
@@ -15,6 +16,7 @@ import {
   handleAgentStatusChanged,
 } from "../src/handlers/agent-identity";
 import {
+  AgentActivated,
   AgentRegistered,
   AgentURIUpdated,
   AgentWalletUpdated,
@@ -148,6 +150,24 @@ function createAgentStatusChangedEvent(
   return event;
 }
 
+function createAgentActivatedEvent(
+  agentId: i32,
+  registrant: Address
+): AgentActivated {
+  let event = changetype<AgentActivated>(newMockEvent());
+  event.parameters = new Array();
+  event.parameters.push(
+    new ethereum.EventParam(
+      "agentId",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(agentId))
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam("registrant", ethereum.Value.fromAddress(registrant))
+  );
+  return event;
+}
+
 function registerAgent(agentId: i32): void {
   let event = createAgentRegisteredEvent(
     agentId,
@@ -271,5 +291,21 @@ describe("Agent Identity Handlers", () => {
     assert.fieldEquals("Agent", "1", "status", "3");
     assert.fieldEquals("Agent", "1", "statusLabel", "DEREGISTERED");
     assert.fieldEquals("Protocol", "1", "totalActiveAgents", "0");
+  });
+
+  test("handleAgentActivated records activatedAt on existing agent", () => {
+    registerAgent(1);
+
+    let event = createAgentActivatedEvent(1, REGISTRANT);
+    handleAgentActivated(event);
+
+    assert.fieldEquals("Agent", "1", "activatedAt", event.block.timestamp.toString());
+  });
+
+  test("handleAgentActivated skips non-existent agent", () => {
+    let event = createAgentActivatedEvent(99, REGISTRANT);
+    handleAgentActivated(event);
+
+    assert.entityCount("Agent", 0);
   });
 });

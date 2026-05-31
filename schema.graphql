@@ -1,3 +1,7 @@
+# ============================================
+# Protocol-wide singleton aggregates
+# ============================================
+
 type Protocol @entity {
   id: ID!
   totalAgents: Int!
@@ -9,7 +13,181 @@ type Protocol @entity {
   totalValidationRequests: Int!
   totalValidationsPassed: Int!
   totalValidationsFailed: Int!
+
+  "wTAG token aggregate stats"
+  wtagTotalSupply: BigInt!
+  wtagTotalTransfers: Int!
+  wtagTotalBurned: BigInt!
+
+  "Reputation staking aggregate stats"
+  totalStakedAmount: BigInt!
+  totalSlashedAmount: BigInt!
+  totalStakingEvents: Int!
+
+  "Voucher (escrow) aggregate stats"
+  totalEscrows: Int!
+  totalEscrowsReleased: Int!
+  totalEscrowsCancelled: Int!
+  totalEscrowVolume: BigInt!
 }
+
+# ============================================
+# wTAG Token Entities (TAGITToken ERC-20)
+# ============================================
+
+"Tracks an ERC-20 token holder balance for the wTAG (TAGIT) token"
+type WTagAccount @entity {
+  id: ID!
+  "Account address"
+  address: Bytes!
+  "Current token balance"
+  balance: BigInt!
+  "Number of transfers sent"
+  transfersSent: Int!
+  "Number of transfers received"
+  transfersReceived: Int!
+
+  transfersFrom: [WTagTransfer!]! @derivedFrom(field: "from")
+  transfersTo: [WTagTransfer!]! @derivedFrom(field: "to")
+  approvals: [WTagApproval!]! @derivedFrom(field: "owner")
+}
+
+"Immutable record of every ERC-20 Transfer event on wTAG"
+type WTagTransfer @entity(immutable: true) {
+  id: ID!
+  from: WTagAccount!
+  to: WTagAccount!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of every ERC-20 Approval event on wTAG"
+type WTagApproval @entity(immutable: true) {
+  id: ID!
+  owner: WTagAccount!
+  spender: Bytes!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of controlled minting by emissions contract"
+type WTagMint @entity(immutable: true) {
+  id: ID!
+  to: WTagAccount!
+  amount: BigInt!
+  totalSupplyAfter: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of token burn"
+type WTagBurn @entity(immutable: true) {
+  id: ID!
+  from: WTagAccount!
+  amount: BigInt!
+  totalSupplyAfter: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of emissions address configuration"
+type WTagEmissionsConfig @entity(immutable: true) {
+  id: ID!
+  emissions: Bytes!
+  setter: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of UUPS proxy upgrade"
+type WTagUpgrade @entity(immutable: true) {
+  id: ID!
+  newImplementation: Bytes!
+  version: String!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+# ============================================
+# Voucher Entities (VerificationEscrow)
+# ============================================
+
+"Mutable escrow record tracking buyer-seller USDC deposit for asset verification"
+type Escrow @entity {
+  id: ID!
+  escrowId: BigInt!
+  assetId: BigInt!
+  buyer: Bytes!
+  seller: Bytes!
+  amount: BigInt!
+  status: String!
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+  releasedAt: BigInt
+  cancelledAt: BigInt
+  oracle: Bytes
+  transactionHash: Bytes!
+}
+
+"Immutable record of escrow creation"
+type EscrowCreated @entity(immutable: true) {
+  id: ID!
+  escrow: Escrow!
+  assetId: BigInt!
+  buyer: Bytes!
+  seller: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of escrow release (verification passed)"
+type EscrowReleased @entity(immutable: true) {
+  id: ID!
+  escrow: Escrow!
+  assetId: BigInt!
+  seller: Bytes!
+  amount: BigInt!
+  oracle: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of escrow cancellation (buyer refund)"
+type EscrowCancelled @entity(immutable: true) {
+  id: ID!
+  escrow: Escrow!
+  assetId: BigInt!
+  buyer: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+"Immutable record of oracle address update"
+type OracleUpdate @entity(immutable: true) {
+  id: ID!
+  previousOracle: Bytes!
+  newOracle: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+# ============================================
+# Agent Entities (TAGITAgentIdentity + Reputation + Validation)
+# ============================================
 
 type Agent @entity {
   id: ID!
@@ -21,6 +199,7 @@ type Agent @entity {
   statusLabel: String!
   registeredAt: BigInt!
   registeredAtBlock: BigInt!
+  activatedAt: BigInt
 
   # Denormalized reputation aggregates
   feedbackCount: Int!
@@ -34,11 +213,17 @@ type Agent @entity {
   validationFailedCount: Int!
   isValidated: Boolean!
 
+  # Denormalized staking aggregates
+  stakeAmount: BigInt!
+  staker: Bytes
+  hasMinBond: Boolean!
+
   # Reverse lookups
   metadata: [AgentMetadata!]! @derivedFrom(field: "agent")
   statusChanges: [AgentStatusChange!]! @derivedFrom(field: "agent")
   feedbacks: [Feedback!]! @derivedFrom(field: "agent")
   validationRequests: [ValidationRequest!]! @derivedFrom(field: "agent")
+  stakeEvents: [StakeEvent!]! @derivedFrom(field: "agent")
 }
 
 type AgentMetadata @entity {
@@ -98,4 +283,50 @@ type ValidationResponse @entity(immutable: true) {
   submittedAt: BigInt!
   submittedAtBlock: BigInt!
   transactionHash: Bytes!
+}
+
+# ============================================
+# REPUTATION STAKING ENTITIES
+# ============================================
+
+"Immutable record of a staking event (deposit, withdrawal, or slash)"
+type StakeEvent @entity(immutable: true) {
+  id: ID!
+  agent: Agent!
+  eventType: String!
+  staker: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+# ============================================
+# REWARD DISTRIBUTION ENTITIES
+# ============================================
+
+type RewardDistribution @entity(immutable: true) {
+  "tx hash + log index"
+  id: ID!
+  recipient: RewardRecipient!
+  recipientAddress: Bytes!
+  amount: BigInt!
+  triggerType: Int!
+  triggerTypeLabel: String!
+  cumulativeDistributed: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RewardRecipient @entity {
+  "recipient address"
+  id: ID!
+  totalEcosystemRewards: BigInt!
+  totalReferralRewards: BigInt!
+  totalVerificationRewards: BigInt!
+  totalGovernanceRewards: BigInt!
+  totalRewards: BigInt!
+  rewardCount: Int!
+  distributions: [RewardDistribution!]! @derivedFrom(field: "recipient")
 }
