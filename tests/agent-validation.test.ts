@@ -51,6 +51,8 @@ function seedAgent(agentId: string): void {
   agent.validationPassedCount = 0;
   agent.validationFailedCount = 0;
   agent.isValidated = false;
+  agent.stakeAmount = BigInt.fromI32(0);
+  agent.hasMinBond = false;
   agent.save();
 }
 
