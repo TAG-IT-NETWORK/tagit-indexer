@@ -120,7 +120,6 @@ function createValidationRequestedEvent(
   requestId: i32,
   agentId: i32,
   requester: Address,
-  quorum: i32,
   isDefense: boolean,
 ): ValidationRequested {
   let event = changetype<ValidationRequested>(newMockEvent());
@@ -141,12 +140,6 @@ function createValidationRequestedEvent(
     new ethereum.EventParam(
       "requester",
       ethereum.Value.fromAddress(requester),
-    ),
-  );
-  event.parameters.push(
-    new ethereum.EventParam(
-      "quorum",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(quorum)),
     ),
   );
   event.parameters.push(
@@ -307,41 +300,42 @@ describe("Validation finalization affects authorization", () => {
     registerAgent(1);
 
     // Request validation
-    let reqEvent = createValidationRequestedEvent(100, 1, REGISTRANT, 3, false);
+    let reqEvent = createValidationRequestedEvent(100, 1, REGISTRANT, false);
     handleValidationRequested(reqEvent);
 
     assert.entityCount("ValidationRequest", 1);
-    assert.fieldEquals("ValidationRequest", "100", "agentId", "1");
+    assert.fieldEquals("ValidationRequest", "100", "agent", "1");
 
     // Finalize as passed
     let finalEvent = createValidationFinalizedEvent(100, 1, true, 85);
     handleValidationFinalized(finalEvent);
 
     assert.fieldEquals("Agent", "1", "isValidated", "true");
-    assert.fieldEquals("ValidationRequest", "100", "status", "PASSED");
+    assert.fieldEquals("ValidationRequest", "100", "status", "VALIDATED");
   });
 
   test("validation failed keeps agent as not validated", () => {
     registerAgent(1);
 
-    let reqEvent = createValidationRequestedEvent(101, 1, REGISTRANT, 3, false);
+    let reqEvent = createValidationRequestedEvent(101, 1, REGISTRANT, false);
     handleValidationRequested(reqEvent);
 
     let finalEvent = createValidationFinalizedEvent(101, 1, false, 40);
     handleValidationFinalized(finalEvent);
 
     assert.fieldEquals("Agent", "1", "isValidated", "false");
-    assert.fieldEquals("ValidationRequest", "101", "status", "FAILED");
+    assert.fieldEquals("ValidationRequest", "101", "status", "REJECTED");
   });
 
-  test("defense validation requires higher quorum", () => {
+  test("defense validation is flagged with isDefense", () => {
     registerAgent(1);
 
-    let reqEvent = createValidationRequestedEvent(102, 1, REGISTRANT, 5, true);
+    let reqEvent = createValidationRequestedEvent(102, 1, REGISTRANT, true);
     handleValidationRequested(reqEvent);
 
+    // NB: the ValidationRequested event/schema carry isDefense only; quorum is
+    // enforced on-chain and not indexed.
     assert.fieldEquals("ValidationRequest", "102", "isDefense", "true");
-    assert.fieldEquals("ValidationRequest", "102", "quorum", "5");
   });
 });
 
@@ -361,20 +355,26 @@ describe("Full agent authorization lifecycle", () => {
     assert.fieldEquals("Protocol", "1", "totalActiveAgents", "0");
 
     // Step 2: Activate (ACTIVE, authorization granted)
-    handleAgentStatusChanged(createAgentStatusChangedEvent(1, 0, 1));
+    // Distinct logIndex per transition — newMockEvent() defaults it to 1, so
+    // without this the 3 AgentStatusChange ids (agentId-txHash-logIndex) collide.
+    let activateEvent = createAgentStatusChangedEvent(1, 0, 1);
+    activateEvent.logIndex = BigInt.fromI32(1);
+    handleAgentStatusChanged(activateEvent);
     assert.fieldEquals("Agent", "1", "status", "1");
     assert.fieldEquals("Agent", "1", "statusLabel", "ACTIVE");
     assert.fieldEquals("Protocol", "1", "totalActiveAgents", "1");
 
     // Step 3: Validate (confirmed authorization)
-    let reqEvent = createValidationRequestedEvent(200, 1, REGISTRANT, 3, false);
+    let reqEvent = createValidationRequestedEvent(200, 1, REGISTRANT, false);
     handleValidationRequested(reqEvent);
     let finalEvent = createValidationFinalizedEvent(200, 1, true, 92);
     handleValidationFinalized(finalEvent);
     assert.fieldEquals("Agent", "1", "isValidated", "true");
 
     // Step 4: Suspend (authorization revoked temporarily)
-    handleAgentStatusChanged(createAgentStatusChangedEvent(1, 1, 2));
+    let suspendEvent = createAgentStatusChangedEvent(1, 1, 2);
+    suspendEvent.logIndex = BigInt.fromI32(2);
+    handleAgentStatusChanged(suspendEvent);
     assert.fieldEquals("Agent", "1", "status", "2");
     assert.fieldEquals("Agent", "1", "statusLabel", "SUSPENDED");
     assert.fieldEquals("Protocol", "1", "totalActiveAgents", "0");
@@ -382,7 +382,9 @@ describe("Full agent authorization lifecycle", () => {
     assert.fieldEquals("Agent", "1", "isValidated", "true");
 
     // Step 5: Reactivate (authorization restored)
-    handleAgentStatusChanged(createAgentStatusChangedEvent(1, 2, 1));
+    let reactivateEvent = createAgentStatusChangedEvent(1, 2, 1);
+    reactivateEvent.logIndex = BigInt.fromI32(3);
+    handleAgentStatusChanged(reactivateEvent);
     assert.fieldEquals("Agent", "1", "status", "1");
     assert.fieldEquals("Agent", "1", "statusLabel", "ACTIVE");
     assert.fieldEquals("Protocol", "1", "totalActiveAgents", "1");

@@ -147,7 +147,9 @@ describe("Reward Distributor Handlers", () => {
       2,
       BigInt.fromI32(300)
     );
-    event2.logIndex = BigInt.fromI32(1);
+    // newMockEvent() defaults logIndex to 1, so use 2 here to get a distinct
+    // RewardDistribution id (txHash-logIndex) from the first event.
+    event2.logIndex = BigInt.fromI32(2);
     handleRewardDistributed(event2);
 
     let recipientId = RECIPIENT.toHexString();
@@ -220,7 +222,9 @@ describe("Reward Distributor Handlers", () => {
       1,
       BigInt.fromI32(200)
     );
-    event2.logIndex = BigInt.fromI32(1);
+    // newMockEvent() defaults logIndex to 1, so use 2 here to get a distinct
+    // RewardDistribution id (txHash-logIndex) from the first event.
+    event2.logIndex = BigInt.fromI32(2);
     handleRewardDistributed(event2);
 
     assert.entityCount("RewardRecipient", 2);
