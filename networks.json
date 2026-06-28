@@ -1,30 +1,29 @@
 {
-  "optimism-sepolia": {
+  "_archived": "OP Sepolia + Arbitrum Sepolia deployments deprecated 2026-06-27 (history in tagit-contracts). VerificationEscrow + ReputationStaking pending Base deploy.",
+  "base-sepolia": {
     "TAGITToken": {
-      "address": "0x061a89736F91cAC11272B8A95fc7e377cD0e4067",
-      "startBlock": 41670569
-    },
-    "VerificationEscrow": {
-      "address": "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726",
-      "startBlock": 41670569
+      "address": "0x5f98B83cD7Aef769cc51D2FB739BA49D561170DE",
+      "startBlock": 39611546
     },
     "TAGITAgentIdentity": {
-      "address": "0xA7f34FD595eBc397Fe04DcE012dbcf0fbbD2A78D",
-      "startBlock": 39774582
+      "address": "0x0611FE60f6E37230bDaf04c5F2Ac2dc9012130a9",
+      "startBlock": 39611546
     },
     "TAGITAgentReputation": {
-      "address": "0x57CCa1974DFE29593FBd24fdAEE1cD614Bfd6E4a",
-      "startBlock": 39774582
+      "address": "0x32be6C82A57d5bCe897538d7dA4109eA0eeB0aA1",
+      "startBlock": 39611546
     },
     "TAGITAgentValidation": {
-      "address": "0x9806919185F98Bd07a64F7BC7F264e91939e86b7",
-      "startBlock": 39774582
-    }
-  },
-  "arbitrum-sepolia": {
+      "address": "0x34766dBa7040C2c8817f1Ee1e448209826DD607e",
+      "startBlock": 39611546
+    },
     "TAGITCore": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "startBlock": 0
+      "address": "0x3adC7eFdB58Ae85483Eff5D4966D916185F31D1d",
+      "startBlock": 39611546
+    },
+    "RoboticAuthorizer": {
+      "address": "0x5c38684D87E826589eC5ED401d94C9671CAe9F40",
+      "startBlock": 39611546
     }
   }
 }

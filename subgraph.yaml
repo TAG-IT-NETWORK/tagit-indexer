@@ -7,11 +7,11 @@ dataSources:
   # ── wTAG Token (TAGITToken ERC-20) ──
   - kind: ethereum
     name: TAGITToken
-    network: optimism-sepolia
+    network: base-sepolia
     source:
-      address: "0x061a89736F91cAC11272B8A95fc7e377cD0e4067"
+      address: "0x5f98B83cD7Aef769cc51D2FB739BA49D561170DE"
       abi: TAGITToken
-      startBlock: 41670569
+      startBlock: 39611546
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -44,46 +44,50 @@ dataSources:
       file: ./src/handlers/wtag.ts
 
   # ── Voucher (VerificationEscrow) ──
-  - kind: ethereum
-    name: VerificationEscrow
-    network: optimism-sepolia
-    source:
-      address: "0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726"
-      abi: VerificationEscrow
-      startBlock: 41670569
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Protocol
-        - Escrow
-        - EscrowCreated
-        - EscrowReleased
-        - EscrowCancelled
-        - OracleUpdate
-      abis:
-        - name: VerificationEscrow
-          file: ./abis/VerificationEscrow.json
-      eventHandlers:
-        - event: EscrowCreated(indexed uint256,indexed uint256,indexed address,address,uint256)
-          handler: handleEscrowCreated
-        - event: EscrowReleased(indexed uint256,indexed uint256,indexed address,uint256,address)
-          handler: handleEscrowReleased
-        - event: EscrowCancelled(indexed uint256,indexed uint256,indexed address,uint256)
-          handler: handleEscrowCancelled
-        - event: TrustedOracleUpdated(indexed address,indexed address)
-          handler: handleTrustedOracleUpdated
-      file: ./src/handlers/voucher.ts
+  # PENDING BASE DEPLOY: VerificationEscrow is NOT deployed on Base Sepolia.
+  # This dataSource is commented out until the contract is deployed; then uncomment,
+  # set the Base proxy address + the deployment startBlock, and redeploy.
+  # (Archived: OP Sepolia addr 0x698D4DbaE56BC7e36E2Ab34bd47aB97461219726, deprecated 2026-06-27.)
+  # - kind: ethereum
+  #   name: VerificationEscrow
+  #   network: base-sepolia
+  #   source:
+  #     address: "0x0000000000000000000000000000000000000000" # TODO: Base proxy
+  #     abi: VerificationEscrow
+  #     startBlock: 39611546
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Protocol
+  #       - Escrow
+  #       - EscrowCreated
+  #       - EscrowReleased
+  #       - EscrowCancelled
+  #       - OracleUpdate
+  #     abis:
+  #       - name: VerificationEscrow
+  #         file: ./abis/VerificationEscrow.json
+  #     eventHandlers:
+  #       - event: EscrowCreated(indexed uint256,indexed uint256,indexed address,address,uint256)
+  #         handler: handleEscrowCreated
+  #       - event: EscrowReleased(indexed uint256,indexed uint256,indexed address,uint256,address)
+  #         handler: handleEscrowReleased
+  #       - event: EscrowCancelled(indexed uint256,indexed uint256,indexed address,uint256)
+  #         handler: handleEscrowCancelled
+  #       - event: TrustedOracleUpdated(indexed address,indexed address)
+  #         handler: handleTrustedOracleUpdated
+  #     file: ./src/handlers/voucher.ts
 
   # ── Agent Identity ──
   - kind: ethereum
     name: TAGITAgentIdentity
-    network: optimism-sepolia
+    network: base-sepolia
     source:
-      address: "0xA7f34FD595eBc397Fe04DcE012dbcf0fbbD2A78D"
+      address: "0x0611FE60f6E37230bDaf04c5F2Ac2dc9012130a9"
       abi: TAGITAgentIdentity
-      startBlock: 39774582
+      startBlock: 39611546
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -112,44 +116,45 @@ dataSources:
       file: ./src/handlers/agent-identity.ts
 
   # ── Reputation Staking (Credibility Bond) ──
-  - kind: ethereum
-    name: ReputationStaking
-    network: optimism-sepolia
-    source:
-      # BLOCKED: ReputationStaking not yet deployed to OP Sepolia.
-      # Deploy via tagit-contracts/script/deploy/DeployReputationStaking.s.sol
-      # then replace this address and update startBlock to the deployment block.
-      address: "0x0000000000000000000000000000000000000000"
-      abi: ReputationStaking
-      startBlock: 39774582
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Protocol
-        - Agent
-        - StakeEvent
-      abis:
-        - name: ReputationStaking
-          file: ./abis/ReputationStaking.json
-      eventHandlers:
-        - event: StakeDeposited(indexed uint256,indexed address,uint256)
-          handler: handleStakeDeposited
-        - event: StakeWithdrawn(indexed uint256,indexed address,uint256)
-          handler: handleStakeWithdrawn
-        - event: StakeSlashed(indexed uint256,uint256,indexed address)
-          handler: handleStakeSlashed
-      file: ./src/handlers/reputation-staking.ts
+  # PENDING BASE DEPLOY: ReputationStaking is NOT deployed on Base Sepolia
+  # (and was never deployed on OP Sepolia either — it carried a zero address).
+  # Commented out until the contract is deployed; then uncomment, set the Base
+  # proxy address + the deployment startBlock, and redeploy.
+  # - kind: ethereum
+  #   name: ReputationStaking
+  #   network: base-sepolia
+  #   source:
+  #     address: "0x0000000000000000000000000000000000000000" # TODO: Base proxy
+  #     abi: ReputationStaking
+  #     startBlock: 39611546
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Protocol
+  #       - Agent
+  #       - StakeEvent
+  #     abis:
+  #       - name: ReputationStaking
+  #         file: ./abis/ReputationStaking.json
+  #     eventHandlers:
+  #       - event: StakeDeposited(indexed uint256,indexed address,uint256)
+  #         handler: handleStakeDeposited
+  #       - event: StakeWithdrawn(indexed uint256,indexed address,uint256)
+  #         handler: handleStakeWithdrawn
+  #       - event: StakeSlashed(indexed uint256,uint256,indexed address)
+  #         handler: handleStakeSlashed
+  #     file: ./src/handlers/reputation-staking.ts
 
   # ── Agent Reputation ──
   - kind: ethereum
     name: TAGITAgentReputation
-    network: optimism-sepolia
+    network: base-sepolia
     source:
-      address: "0x57CCa1974DFE29593FBd24fdAEE1cD614Bfd6E4a"
+      address: "0x32be6C82A57d5bCe897538d7dA4109eA0eeB0aA1"
       abi: TAGITAgentReputation
-      startBlock: 39774582
+      startBlock: 39611546
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -173,11 +178,11 @@ dataSources:
   # ── Agent Validation ──
   - kind: ethereum
     name: TAGITAgentValidation
-    network: optimism-sepolia
+    network: base-sepolia
     source:
-      address: "0x9806919185F98Bd07a64F7BC7F264e91939e86b7"
+      address: "0x34766dBa7040C2c8817f1Ee1e448209826DD607e"
       abi: TAGITAgentValidation
-      startBlock: 39774582
+      startBlock: 39611546
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -198,3 +203,66 @@ dataSources:
         - event: ValidationFinalized(indexed uint256,indexed uint256,bool,uint256)
           handler: handleValidationFinalized
       file: ./src/handlers/agent-validation.ts
+
+  # ── Core Lifecycle (TAGITCore) — merged from subgraph-arbitrum.yaml during Base migration 2026-06-27 ──
+  - kind: ethereum
+    name: TAGITCore
+    network: base-sepolia
+    source:
+      address: "0x3adC7eFdB58Ae85483Eff5D4966D916185F31D1d"
+      abi: TAGITCore
+      startBlock: 39611546
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CoreProtocol
+        - Asset
+        - StateTransition
+        - CustodyChange
+        - ResolveApproval
+      abis:
+        - name: TAGITCore
+          file: ./abis/TAGITCore.json
+      eventHandlers:
+        - event: AssetMinted(indexed uint256,indexed address,bytes32)
+          handler: handleAssetMinted
+        - event: StateChanged(indexed uint256,uint8,uint8,address)
+          handler: handleStateChanged
+        - event: TagBound(indexed uint256,indexed bytes32)
+          handler: handleTagBound
+        - event: CustodyTransfer(indexed uint256,uint8,uint8,indexed address,indexed address,uint256,bytes32)
+          handler: handleCustodyTransfer
+        - event: ResolveApproved(indexed uint256,indexed address,uint256)
+          handler: handleResolveApproved
+      file: ./src/handlers/tagicore.ts
+
+  # ── Robotic Authorizer — merged from subgraph-arbitrum.yaml during Base migration 2026-06-27 ──
+  - kind: ethereum
+    name: RoboticAuthorizer
+    network: base-sepolia
+    source:
+      address: "0x5c38684D87E826589eC5ED401d94C9671CAe9F40"
+      abi: RoboticAuthorizer
+      startBlock: 39611546
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RobotAuthorization
+        - ObjectSecurityConfig
+      abis:
+        - name: RoboticAuthorizer
+          file: ./abis/RoboticAuthorizer.json
+      eventHandlers:
+        - event: RobotActionAuthorized(indexed address,indexed uint256,uint256,bytes32,indexed uint256)
+          handler: handleRobotActionAuthorized
+        - event: ObjectSafetyClassUpdated(indexed uint256,uint8,uint8)
+          handler: handleObjectSafetyClassUpdated
+        - event: ObjectZoneUpdated(indexed uint256,bytes32,bytes32)
+          handler: handleObjectZoneUpdated
+        - event: ObjectProhibitedActionsUpdated(indexed uint256,uint256,uint256)
+          handler: handleObjectProhibitedActionsUpdated
+      file: ./src/handlers/robotauthorizer.ts

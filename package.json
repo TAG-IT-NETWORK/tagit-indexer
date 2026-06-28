@@ -6,10 +6,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "test": "graph test",
-    "deploy:goldsky": "goldsky subgraph deploy tagit-indexer/0.1.0 --path .",
-    "codegen:arbitrum": "graph codegen subgraph-arbitrum.yaml",
-    "build:arbitrum": "graph codegen subgraph-arbitrum.yaml && graph build subgraph-arbitrum.yaml",
-    "deploy:arbitrum": "graph codegen subgraph-arbitrum.yaml && graph build subgraph-arbitrum.yaml && goldsky subgraph deploy tagit-core-arbitrum/0.1.0 --path ."
+    "deploy:goldsky": "goldsky subgraph deploy tagit-indexer/0.1.0 --path ."
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.71.2",
