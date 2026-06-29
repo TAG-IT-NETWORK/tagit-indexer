@@ -1,9 +1,17 @@
 {
-  "_archived": "OP Sepolia + Arbitrum Sepolia deployments deprecated 2026-06-27 (history in tagit-contracts). VerificationEscrow + ReputationStaking pending Base deploy.",
+  "_archived": "OP Sepolia + Arbitrum Sepolia deployments deprecated 2026-06-27 (history in tagit-contracts).",
   "base-sepolia": {
     "TAGITToken": {
       "address": "0x5f98B83cD7Aef769cc51D2FB739BA49D561170DE",
       "startBlock": 39611546
+    },
+    "VerificationEscrow": {
+      "address": "0x4c9aACfcb64169E3BC187c227c4C0e0a5CFDA1cF",
+      "startBlock": 39003336
+    },
+    "ReputationStaking": {
+      "address": "0x4154af74DA2B3a98096317100296966Ade15574A",
+      "startBlock": 43463277
     },
     "TAGITAgentIdentity": {
       "address": "0x0611FE60f6E37230bDaf04c5F2Ac2dc9012130a9",
