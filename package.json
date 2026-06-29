@@ -6,7 +6,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "test": "graph test",
-    "deploy:goldsky": "goldsky subgraph deploy tagit-indexer/0.1.0 --path ."
+    "deploy:goldsky": "goldsky subgraph deploy tagit-indexer/0.2.0 --path ."
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.71.2",
