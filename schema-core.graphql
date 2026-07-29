@@ -1,5 +1,5 @@
 "Singleton aggregate stats for TAGITCore lifecycle"
-type CoreProtocol @entity {
+type CoreProtocol @entity(immutable: false) {
   id: ID!
   totalAssets: Int!
   "State distribution counters"
@@ -13,7 +13,7 @@ type CoreProtocol @entity {
 }
 
 "Physical asset NFT tracked through 7-state lifecycle"
-type Asset @entity {
+type Asset @entity(immutable: false) {
   id: ID!
   tokenId: BigInt!
   owner: Bytes!
@@ -83,7 +83,7 @@ type RobotAuthorization @entity(immutable: true) {
 }
 
 "Mutable security configuration for an asset (keyed by tokenId)"
-type ObjectSecurityConfig @entity {
+type ObjectSecurityConfig @entity(immutable: false) {
   id: ID!
   safetyClass: Int!
   zone: Bytes!

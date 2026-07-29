@@ -2,7 +2,7 @@
 # Protocol-wide singleton aggregates
 # ============================================
 
-type Protocol @entity {
+type Protocol @entity(immutable: false) {
   id: ID!
   totalAgents: Int!
   totalActiveAgents: Int!
@@ -36,7 +36,7 @@ type Protocol @entity {
 # ============================================
 
 "Tracks an ERC-20 token holder balance for the wTAG (TAGIT) token"
-type WTagAccount @entity {
+type WTagAccount @entity(immutable: false) {
   id: ID!
   "Account address"
   address: Bytes!
@@ -121,7 +121,7 @@ type WTagUpgrade @entity(immutable: true) {
 # ============================================
 
 "Mutable escrow record tracking buyer-seller USDC deposit for asset verification"
-type Escrow @entity {
+type Escrow @entity(immutable: false) {
   id: ID!
   escrowId: BigInt!
   assetId: BigInt!
@@ -189,7 +189,7 @@ type OracleUpdate @entity(immutable: true) {
 # Agent Entities (TAGITAgentIdentity + Reputation + Validation)
 # ============================================
 
-type Agent @entity {
+type Agent @entity(immutable: false) {
   id: ID!
   agentId: BigInt!
   registrant: Bytes!
@@ -226,7 +226,7 @@ type Agent @entity {
   stakeEvents: [StakeEvent!]! @derivedFrom(field: "agent")
 }
 
-type AgentMetadata @entity {
+type AgentMetadata @entity(immutable: false) {
   id: ID!
   agent: Agent!
   key: String!
@@ -247,7 +247,7 @@ type AgentStatusChange @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type Feedback @entity {
+type Feedback @entity(immutable: false) {
   id: ID!
   feedbackId: BigInt!
   agent: Agent!
@@ -259,7 +259,7 @@ type Feedback @entity {
   createdAtBlock: BigInt!
 }
 
-type ValidationRequest @entity {
+type ValidationRequest @entity(immutable: false) {
   id: ID!
   requestId: BigInt!
   agent: Agent!
@@ -319,7 +319,7 @@ type RewardDistribution @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type RewardRecipient @entity {
+type RewardRecipient @entity(immutable: false) {
   "recipient address"
   id: ID!
   totalEcosystemRewards: BigInt!
@@ -339,7 +339,7 @@ type RewardRecipient @entity {
 # ============================================
 
 "Singleton aggregate stats for TAGITCore lifecycle"
-type CoreProtocol @entity {
+type CoreProtocol @entity(immutable: false) {
   id: ID!
   totalAssets: Int!
   "State distribution counters"
@@ -353,7 +353,7 @@ type CoreProtocol @entity {
 }
 
 "Physical asset NFT tracked through 7-state lifecycle"
-type Asset @entity {
+type Asset @entity(immutable: false) {
   id: ID!
   tokenId: BigInt!
   owner: Bytes!
@@ -423,7 +423,7 @@ type RobotAuthorization @entity(immutable: true) {
 }
 
 "Mutable security configuration for an asset (keyed by tokenId)"
-type ObjectSecurityConfig @entity {
+type ObjectSecurityConfig @entity(immutable: false) {
   id: ID!
   safetyClass: Int!
   zone: Bytes!
